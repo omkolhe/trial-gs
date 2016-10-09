@@ -64,7 +64,7 @@ int main() {
 	return 1;
 }
 
-int predict_ele(string info){
+int predict_elevation(string info){
 
 	/*
 	    date/time in Unix format(1), 
@@ -108,7 +108,7 @@ int predict_ele(string info){
 	return int_ele;
 }
 
-int predict_ele(string info){
+int predict_azimuth(string info){
 
 	/*
 	    date/time in Unix format(1), 
