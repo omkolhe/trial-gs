@@ -6,7 +6,7 @@
 #include <unistd.h>
 using namespace std; 
 
-
+/* test change*/
 const char* predictQuery = "predict -f TIGRISAT";
 const char* getRotctlQuery = "sudo rotctl -m 601 -r /dev/ttyACM0 -s 9600 get_pos";
 int defaultAzimuth;
