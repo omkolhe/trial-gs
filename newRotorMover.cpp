@@ -64,6 +64,95 @@ int main() {
 	return 1;
 }
 
+int predict_ele(string info){
+
+	/*
+	    date/time in Unix format(1), 
+	    the date and time in ASCII(2, 3, 4) (UTC), 
+	    the elevation of the satellite in degrees (5), 
+	    the  azimuth  of  the satellite  in degrees (6), 
+	    the orbital phase (modulo 256) (7), 
+	    the latitude (N) (8)
+       and longitude (W) (9) of the satellite's  sub-satellite  point,  
+       the  slant range  to  the  satellite  (in  kilometers) (10),  
+       the orbit number (11), 
+       and the spacecraft's sunlight visibility information (12).  
+       For example:  1003611710 Sat  20Oct01  21:01:50    11     6   164    51   72   1389  16669 * """
+	*/
+
+
+	string ele = ' ';
+	i = 0;
+	qty_count = 1;
+	int int_ele;
+
+	while (qty_count < 11){
+
+		if(s[i]==' '){
+			i = i + 1;
+			continue;
+		}
+
+		if(i>0 and s[i-1]==' ' and s[i]!=' '){
+			qty_count = qty_count + 1;
+		}
+			
+		if(qty_count == 10){
+			ele = ele + s[i];
+		}
+		
+		i = i + 1;
+	}
+
+	int_ele = atoi(ele);
+	return int_ele;
+}
+
+int predict_ele(string info){
+
+	/*
+	    date/time in Unix format(1), 
+	    the date and time in ASCII(2, 3, 4) (UTC), 
+	    the elevation of the satellite in degrees (5), 
+	    the  azimuth  of  the satellite  in degrees (6), 
+	    the orbital phase (modulo 256) (7), 
+	    the latitude (N) (8)
+       and longitude (W) (9) of the satellite's  sub-satellite  point,  
+       the  slant range  to  the  satellite  (in  kilometers) (10),  
+       the orbit number (11), 
+       and the spacecraft's sunlight visibility information (12).  
+       For example:  1003611710 Sat  20Oct01  21:01:50    11     6   164    51   72   1389  16669 * """
+	*/
+
+
+	string azi = ' ';
+	i = 0;
+	qty_count = 1;
+	int int_ele;
+
+	while (qty_count < 7){
+
+		if(s[i]==' '){
+			i = i + 1;
+			continue;
+		}
+
+		if(i>0 and s[i-1]==' ' and s[i]!=' '){
+			qty_count = qty_count + 1;
+		}
+			
+		if(qty_count == 6){
+			ele = ele + s[i];
+		}
+		
+		i = i + 1;
+	}
+
+	int_azi = atoi(azi);
+	return int_azi;
+}
+
+/*
 int getSatEle(string info) {	
 	int count = 0;
 	for(int i=0; info[i]!='*'; i++) {
@@ -106,10 +195,12 @@ int getSatAzi(string info) {
 	}
 	return 6;	
 }
-
+*/
 int getRotAzi() {
-	char azi[40];
-	char ele[40];
+	//char azi[40];
+	//char ele[40];
+	string azi[40];
+	string ele[40];
 		try{
 			FILE* pipe = popen(getRotctlQuery, "r");
         	fgets(azi, 40, pipe);
@@ -123,8 +214,10 @@ int getRotAzi() {
 }
 
 int getRotEle() {
-	char azi[40];
-	char ele[40];
+	//char azi[40];
+	//char ele[40];
+	string azi[40];
+	string ele[40];
 		try{
 			FILE* pipe = popen(getRotctlQuery, "r");
         	fgets(azi, 40, pipe);
