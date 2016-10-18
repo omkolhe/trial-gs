@@ -31,7 +31,7 @@ int main() {
 	int elevation, azimuth;
 	//int k=1;
 	//char result[128];
-	//int def = 0;
+	int def = 0;
 	cout<<"Tracking mode rules:\n1 if azi values 222 and 305 both belong to [beginning,end] of satellite pass; \n2 if only 222 belongs; \n3 if only 305 belongs; \neither 2 or 3 if neither of these two values are crossed by satellite\n";
 	cout<<"Enter tracking mode:...";
 	cin>>mode;
