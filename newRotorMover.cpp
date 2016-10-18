@@ -6,7 +6,7 @@
 #include <unistd.h>
 using namespace std; 
 
-/* test change*/
+// /* test change*/
 const char* predictQuery = "predict -f TIGRISAT";
 const char* getRotctlQuery = "sudo rotctl -m 601 -r /dev/ttyACM0 -s 9600 get_pos";
 int defaultAzimuth;
@@ -29,9 +29,9 @@ double controlElevation(double aEle);
 void set(int elevation, int azimuth);
 int main() {
 	int elevation, azimuth;
-	int k=1;
-	char result[128];
-	int def = 0;
+	//int k=1;
+	//char result[128];
+	//int def = 0;
 	cout<<"Tracking mode rules:\n1 if azi values 222 and 305 both belong to [beginning,end] of satellite pass; \n2 if only 222 belongs; \n3 if only 305 belongs; \neither 2 or 3 if neither of these two values are crossed by satellite\n";
 	cout<<"Enter tracking mode:...";
 	cin>>mode;
@@ -42,7 +42,7 @@ int main() {
 		if(mode == 1) set(30, 270);
 		if (mode == 2) set(15, 180);
 		if(mode == 3) set(15, 0);
-	}
+	}/*
 	while(k<25) {
 		//k++;
 		try{
@@ -58,10 +58,10 @@ int main() {
 		azimuth = getSatAzi(result);
 		cout<<"Azimuth is:"<<azimuth<<"\n";
 
-		dataLog(result);
+		dataLog(result); */
 		set(elevation, azimuth);
-	}
-	return 1;
+	//}
+	//return 1;
 }
 
 int getSatEle(string info) {	
