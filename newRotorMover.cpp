@@ -22,26 +22,27 @@ int getSatAzi(string res);	//get azimuth angle of satellite using predict data
 int getRotAzi();
 int getRotEle();
 void setElevationAzimuth(int elevation, int azimuth);
-double actualAzimuth(double cAzi);
-double actualElevation(double cEle);
-double controlAzimuth(double aAzi);
-double controlElevation(double aEle);
-void set(int elevation, int azimuth);
+double actualAzimuth(double cAzi,int m);
+double actualElevation(double cEle,int m);
+double controlAzimuth(double aAzi, int m);
+double controlElevation(double aEle,int m);
+void set(int elevation, int azimuth, int m);
 int main() {
 	int elevation, azimuth;
+	int mode =1;
 	//int k=1;
 	//char result[128];
 	int def = 0;
-	cout<<"Tracking mode rules:\n1 if azi values 222 and 305 both belong to [beginning,end] of satellite pass; \n2 if only 222 belongs; \n3 if only 305 belongs; \neither 2 or 3 if neither of these two values are crossed by satellite\n";
-	cout<<"Enter tracking mode:...";
-	cin>>mode;
+	//cout<<"Tracking mode rules:\n1 if azi values 222 and 305 both belong to [beginning,end] of satellite pass; \n2 if only 222 belongs; \n3 if only 305 belongs; \neither 2 or 3 if neither of these two values are crossed by satellite\n";
+	//cout<<"Enter tracking mode:...";
+	//cin>>mode;
 	//set default position
 	cout<<"Enter 1 to start from the default position of set mode(use this if earlier runs of the program had used different modes or if you're unsure) ; \nEnter 0 otherwise\n";
 	cin>>def;
 	if(def != 0) {
-		if(mode == 1) set(30, 270);
-		if (mode == 2) set(15, 180);
-		if(mode == 3) set(15, 0);
+		if(mode == 1) set(30, 270, 1);
+		if (mode == 2) set(15, 180, 2);
+		if(mode == 3) set(15, 0, 3);
 	}/*
 	while(k<25) {
 		//k++;
@@ -59,7 +60,12 @@ int main() {
 		cout<<"Azimuth is:"<<azimuth<<"\n";
 
 		dataLog(result); */
-		set(elevation, azimuth);
+		int test;
+		while(1){
+		cout<<"cin ele"<<endl;
+		cin>>test;
+		set(test, 350, mode); //ele,azi
+		}
 	//}
 	//return 1;
 }
@@ -118,7 +124,7 @@ int getRotAzi() {
 			} catch(std::exception e){
 			cout<<"Error in connecting to rotctl!";
 		} 
-%	int contAzimuth = atoi((const char*)azi);   // stores positions as read by device
+	int contAzimuth = atoi((const char*)azi);   // stores positions as read by device
 	return contAzimuth;
 }
 
@@ -141,45 +147,45 @@ void dataLog(string info) {
 	try {
 		FILE *file;
 		file=fopen("pratham2.txt", "a");
-		%fputs(info.c_str(),file);
+		fputs(info.c_str(),file);
 		fclose(file);
 		} catch(std::exception e){
 		cout<<"Error in logging data!";
 	} 
 }
 
-double actualAzimuth(double cAzi) {
+double actualAzimuth(double cAzi,int m) {
 	double aAzi;
-	if(mode != 1) aAzi = 2.8555*cAzi - 48.669 + 180;
+	if(m!= 1) aAzi = 2.8555*cAzi - 48.669 + 180;
 	else aAzi = 2.8555*cAzi - 48.669 ;
 	if (aAzi > 360) aAzi -= 360;
 	if(aAzi < 0) aAzi += 360;
 	return aAzi;
 }
-double controlAzimuth(double aAzi) {
+double controlAzimuth(double aAzi, int m) {
 	double cAzi;
-	if (mode == 1 && aAzi < 60) aAzi += 360; 
-	if (mode == 3 && aAzi < 222) aAzi += 360;
-	if (mode == 2 && aAzi < 305) aAzi += 360;
-	if(mode != 1) cAzi = 0.3502*aAzi - 46;
+	if (m == 1 && aAzi < 60) aAzi += 360; 
+	if (m == 3 && aAzi < 222) aAzi += 360;
+	if (m == 2 && aAzi < 305) aAzi += 360;
+	if(m != 1) cAzi = 0.3502*aAzi - 46;
 	else cAzi = 0.3502*aAzi + 17.044;
 	return cAzi;
 }
 
-double actualElevation(double cEle) {
+double actualElevation(double cEle,int m) {
 	double aEle;
-	if(mode != 1) aEle = cEle - 26;
+	if(m!= 1) aEle = cEle - 26;
 	else aEle = -1.0885*cEle + 218.93;
 	return aEle;
 }
-double controlElevation(double aEle) {
+double controlElevation(double aEle,int m) {
 	double cEle;
-	if(mode != 1) cEle = aEle + 26;
+	if(m!= 1) cEle = aEle + 26;
 	else cEle = -0.8978*aEle + 199.8;
 	return cEle;
 }
 
-void set(int elevation, int azimuth) {
+void set(int elevation, int azimuth,  int m) {
 	int delta = 3;
 	int contElevation;
 	int contAzimuth;
@@ -204,21 +210,21 @@ void set(int elevation, int azimuth) {
 		if (mode == 1) elevation=25;
 		else elevation = 15;
 	}
-	contAzimuth = controlAzimuth(azimuth);   // stores positions as read by device
-	contElevation = controlElevation(elevation);
+	contAzimuth = controlAzimuth(azimuth, m);   // stores positions as read by device
+	contElevation = controlElevation(elevation,m);
 	do {
 		sprintf(setRotctl, "sudo rotctl -m 601 -r /dev/ttyACM0 -s 9600 set_pos %d %d",contAzimuth, contElevation);
 		system(setRotctl);
 		sleep(0.3);
 		cout<<"\nAzimuth(control) set to:"<<contAzimuth;
 		cout<<"\nElevation(control) set to:"<<contElevation;
-		cout<<"\nAzimuth(actual) set to:                       "<<actualAzimuth(contAzimuth);
-		cout<<"\nElevation(actual) set to:                     "<<actualElevation(contElevation)<<"\n";
+		cout<<"\nAzimuth(actual) set to:                       "<<actualAzimuth(contAzimuth,m);
+		cout<<"\nElevation(actual) set to:                     "<<actualElevation(contElevation,m)<<"\n";
 	}while( abs(getRotAzi() - contAzimuth) > delta && abs(getRotEle() - contElevation) > delta);
 	system(setRotctl);
 	
-	rotorAzimuth = actualAzimuth(contAzimuth);   
-	rotorElevation = actualElevation(contElevation);
+	rotorAzimuth = actualAzimuth(contAzimuth,m);   
+	rotorElevation = actualElevation(contElevation,m);
 		
 	sprintf(data, "\n(control) at: %d %d",contAzimuth, contElevation);
 	dataLog(data);
